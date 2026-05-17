@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Услуги | Счетоводна Кантора</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<style>
+		:root {
+			--accent:    #f56a6a;
+			--accent-dk: #d94f4f;
+			--border:    #e4e4e4;
+			--text:      #3d3d3d;
+			--muted:     #888;
+			--radius:    8px;
+		}
+
+		.service-card {
+			background: #f9f9f9;
+			border: 1px solid var(--border);
+			border-left: 4px solid var(--accent);
+			border-radius: var(--radius);
+			padding: 1.6rem 1.8rem;
+			margin-bottom: 1.1rem;
+			transition: box-shadow .2s;
+		}
+		.service-card:hover { box-shadow: 0 3px 14px rgba(0,0,0,.07); }
+		.service-card h3 {
+			margin: 0 0 .45rem;
+			font-size: 1.05rem;
+			color: var(--text);
+		}
+		.service-card p {
+			margin: 0;
+			font-size: .92rem;
+			color: #666;
+			line-height: 1.65;
+		}
+
+		.calc-cta-box {
+			background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+			border: 2px solid var(--accent);
+			border-radius: var(--radius);
+			padding: 1.8rem 2rem;
+			margin-top: 2.2rem;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			flex-wrap: wrap;
+			gap: 1.2rem;
+		}
+		.calc-cta-box .cta-text h3 {
+			margin: 0 0 .35rem;
+			color: var(--accent-dk);
+			font-size: 1.05rem;
+		}
+		.calc-cta-box .cta-text p {
+			margin: 0;
+			font-size: .88rem;
+			color: var(--muted);
+			max-width: 480px;
+		}
+		.btn-cta {
+			background: var(--accent);
+			color: #fff !important;
+			padding: .75rem 1.8rem;
+			border-radius: 6px;
+			font-weight: 700;
+			font-size: .9rem;
+			text-decoration: none;
+			white-space: nowrap;
+			transition: background .2s;
+		}
+		.btn-cta:hover { background: var(--accent-dk); }
+	</style>
+</head>
+<body class="is-preload">
+<div id="page-wrapper">
+
+	<div id="header-wrapper">
+		<header id="header" class="container">
+			<div id="logo">
+				<h1><a href="index.html">Вашето Лого</a></h1>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li><a href="index.html">Начало</a></li>
+					<li><a href="novini.html">Новини</a></li>
+					<li class="current"><a href="uslugi.html">Услуги</a></li>
+					<li><a href="calendar.html">Календар</a></li>
+					<li><a href="index.html#contact">Контакти</a></li>
+				</ul>
+			</nav>
+		</header>
+	</div>
+
+	<div id="main-wrapper">
+		<div class="container">
+			<div id="content">
+				<article>
+
+					<header class="major">
+						<h2>Нашите Услуги</h2>
+						<p>Предлагаме пълен спектър от счетоводни и финансови услуги за фирми и физически лица.<br />
+						Работим прецизно, отговорно и в срок — за да се фокусирате върху бизнеса си.</p>
+					</header>
+
+					<div class="service-card">
+						<h3>📒 Счетоводно обслужване</h3>
+						<p>Текущо осчетоводяване на всички стопански операции, изготвяне на оборотни ведомости и справки, поддържане на счетоводни регистри в съответствие с българското законодателство и приложимите счетоводни стандарти.</p>
+					</div>
+
+					<div class="service-card">
+						<h3>📋 Данъчно деклариране и консултации</h3>
+						<p>Изготвяне и подаване на всички видове данъчни декларации — ДДС, ЗКПО, ЗДДФЛ. Текущо данъчно планиране и консултации при данъчни ревизии, проверки и кореспонденция с НАП.</p>
+					</div>
+
+					<div class="service-card">
+						<h3>💰 Обработка на заплати и осигуровки (ТРЗ)</h3>
+						<p>Изготвяне на ведомости за заплати, трудови договори и допълнителни споразумения. Подаване на декларации обр. 1 и обр. 6 към НАП и НОИ. Изчисляване на обезщетения, отпуски и болнични.</p>
+					</div>
+
+					<div class="service-card">
+						<h3>🏢 Регистрация на фирма</h3>
+						<p>Съдействие при регистрация на еднолични търговци, ЕООД, ООД и АД в Търговския регистър. Регистрация по ЗДДС. Пълно административно придружаване от идеята до вписването.</p>
+					</div>
+
+					<div class="service-card">
+						<h3>📊 Годишно приключване и финансови отчети</h3>
+						<p>Изготвяне на годишни финансови отчети, данъчни амортизационни планове и статистически форми. Публикуване на ГФО в Търговския регистър и НСИ.</p>
+					</div>
+
+					<div class="service-card">
+						<h3>🔍 Одиторска подкрепа</h3>
+						<p>Съдействие при задължителен и доброволен одит — подготовка на документация, комуникация с одиторите и отстраняване на констатирани несъответствия.</p>
+					</div>
+
+					<div class="service-card">
+						<h3>🤝 Бизнес консултации</h3>
+						<p>Анализ на финансово-счетоводното състояние на фирмата. Съдействие при банкови кредити, бизнес планове и при отношения с контролни органи и институции.</p>
+					</div>
+
+					<div class="calc-cta-box">
+						<div class="cta-text">
+							<h3>Не сте сигурни колко струва услугата?</h3>
+							<p>Можете да използвате калкулаторът ни за ориентировъчни цени — отговорете на няколко въпроса и получете незабавна оценка за вашия конкретен случай.</p>
+						</div>
+						<a href="calculator.html" class="btn-cta">Към калкулатора →</a>
+					</div>
+
+				</article>
+			</div>
+		</div>
+	</div>
+
+</div>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.dropotron.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

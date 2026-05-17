@@ -1,0 +1,352 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Новини | Счетоводна Кантора</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<style>
+		:root {
+			--accent:    #f56a6a;
+			--accent-dk: #d94f4f;
+			--border:    #e4e4e4;
+			--text:      #3d3d3d;
+			--muted:     #999;
+			--radius:    8px;
+		}
+
+		/* ── Source tabs ── */
+		.news-source-bar {
+			display: flex;
+			gap: 0;
+			border-bottom: 2px solid var(--border);
+			margin-bottom: 1.8rem;
+		}
+		.src-tab {
+			padding: .65rem 2rem;
+			font-size: 1rem;
+			font-weight: 700;
+			letter-spacing: .04em;
+			border: none;
+			background: transparent;
+			color: var(--muted);
+			cursor: pointer;
+			border-bottom: 3px solid transparent;
+			margin-bottom: -2px;
+			transition: color .2s, border-color .2s;
+			font-family: inherit;
+		}
+		.src-tab:hover { color: var(--text); }
+		.src-tab.active {
+			color: var(--accent-dk);
+			border-bottom-color: var(--accent);
+		}
+
+		/* ── Panels ── */
+		.news-panel { display: none; }
+		.news-panel.active { display: block; }
+
+		/* ── News list ── */
+		.news-list {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+		.news-list li {
+			display: flex;
+			align-items: baseline;
+			gap: 1.2rem;
+			padding: .9rem 0;
+			border-bottom: 1px solid var(--border);
+		}
+		.news-list li:last-child { border-bottom: none; }
+		.news-list .n-date {
+			flex-shrink: 0;
+			font-size: .78rem;
+			color: var(--muted);
+			min-width: 78px;
+			text-align: right;
+			font-variant-numeric: tabular-nums;
+		}
+		.news-list .n-title a {
+			font-size: .93rem;
+			color: var(--text);
+			text-decoration: none;
+			line-height: 1.5;
+			transition: color .15s;
+		}
+		.news-list .n-title a:hover { color: var(--accent-dk); }
+
+		/* ── Loading / error states ── */
+		.news-status {
+			text-align: center;
+			padding: 3rem 1rem;
+			color: var(--muted);
+			font-size: .9rem;
+		}
+		.news-status .spinner {
+			display: inline-block;
+			width: 28px; height: 28px;
+			border: 3px solid var(--border);
+			border-top-color: var(--accent);
+			border-radius: 50%;
+			animation: spin .7s linear infinite;
+			margin-bottom: .7rem;
+		}
+		@keyframes spin { to { transform: rotate(360deg); } }
+		.news-status.error { color: #c0392b; }
+
+		/* ── Meta row ── */
+		.news-meta {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: .5rem;
+			margin-top: 1.2rem;
+			padding-top: .9rem;
+			border-top: 1px solid var(--border);
+			font-size: .76rem;
+			color: var(--muted);
+		}
+		.news-meta a { color: var(--muted); text-decoration: underline; }
+		.news-meta a:hover { color: var(--accent-dk); }
+	</style>
+</head>
+<body class="is-preload">
+<div id="page-wrapper">
+
+	<div id="header-wrapper">
+		<header id="header" class="container">
+			<div id="logo">
+				<h1><a href="index.html">Вашето Лого</a></h1>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li><a href="index.html">Начало</a></li>
+					<li class="current"><a href="novini.html">Новини</a></li>
+					<li><a href="uslugi.html">Услуги</a></li>
+					<li><a href="calendar.html">Календар</a></li>
+					<li><a href="index.html#contact">Контакти</a></li>
+				</ul>
+			</nav>
+		</header>
+	</div>
+
+	<div id="main-wrapper">
+		<div class="container">
+			<div id="content">
+				<article>
+
+					<header class="major">
+						<h2>Новини</h2>
+						<p>Актуална информация от Националната агенция за приходите (НАП) и<br />
+						Националния осигурителен институт (НОИ), обновявана автоматично.</p>
+					</header>
+
+					<!-- Tabs -->
+					<div class="news-source-bar">
+						<button class="src-tab active" id="tab-nap" onclick="switchSource('nap')">НАП</button>
+						<button class="src-tab" id="tab-noi" onclick="switchSource('noi')">НОИ</button>
+					</div>
+
+					<!-- НАП panel -->
+					<div class="news-panel active" id="panel-nap">
+						<div id="content-nap">
+							<div class="news-status">
+								<div class="spinner"></div><br />Зареждане на новини от НАП…
+							</div>
+						</div>
+						<div class="news-meta">
+							<span id="updated-nap"></span>
+							<a href="https://nra.bg/wps/portal/nra/actualno/actualno" target="_blank" rel="noopener">Към nra.bg →</a>
+						</div>
+					</div>
+
+					<!-- НОИ panel -->
+					<div class="news-panel" id="panel-noi">
+						<div id="content-noi">
+							<div class="news-status">
+								<div class="spinner"></div><br />Зареждане на новини от НОИ…
+							</div>
+						</div>
+						<div class="news-meta">
+							<span id="updated-noi"></span>
+							<a href="https://www.nssi.bg/publichnost/novini/" target="_blank" rel="noopener">Към nssi.bg →</a>
+						</div>
+					</div>
+
+				</article>
+			</div>
+		</div>
+	</div>
+
+</div>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.dropotron.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+
+<script>
+/* ================================================================
+   NEWS FEED LOGIC
+   ─────────────────────────────────────────────────────────────────
+   НОИ  → WordPress native RSS feed (clean XML)
+   НАП  → HTML page scraped through allorigins CORS proxy
+
+   Both sources are fetched on page load.
+   Switching tabs is instant — data is already loaded.
+   ================================================================ */
+
+/* ================================================================
+   NEWS FEED LOGIC
+   ─────────────────────────────────────────────────────────────────
+   Calls Netlify serverless functions which fetch the feeds
+   server-side — no CORS proxies, no third-party dependencies.
+
+   Functions live in netlify/functions/:
+     /.netlify/functions/noi-feed  →  НОИ RSS
+     /.netlify/functions/nap-news  →  НАП page scrape
+   ================================================================ */
+
+function switchSource(src) {
+	['nap','noi'].forEach(s => {
+		document.getElementById('tab-' + s).classList.toggle('active', s === src);
+		document.getElementById('panel-' + s).classList.toggle('active', s === src);
+	});
+}
+
+function fmtDate(str) {
+	if (!str) return '';
+	/* Already formatted DD.MM.YYYY */
+	if (/^\d{2}\.\d{2}\.\d{4}$/.test(str)) return str;
+	const d = new Date(str);
+	if (isNaN(d)) return str;
+	return d.getDate().toString().padStart(2,'0') + '.' +
+	       (d.getMonth()+1).toString().padStart(2,'0') + '.' +
+	       d.getFullYear();
+}
+
+function nowStamp() {
+	const n = new Date();
+	return 'Обновено: ' + n.getDate().toString().padStart(2,'0') + '.' +
+		(n.getMonth()+1).toString().padStart(2,'0') + '.' + n.getFullYear() + ' ' +
+		n.getHours().toString().padStart(2,'0') + ':' +
+		n.getMinutes().toString().padStart(2,'0');
+}
+
+function renderList(containerId, updatedId, items, sourceName) {
+	const el = document.getElementById(containerId);
+	if (!items || !items.length) {
+		el.innerHTML = '<div class="news-status error">Няма намерени новини от ' + sourceName + '.</div>';
+		return;
+	}
+	document.getElementById(updatedId).textContent = nowStamp();
+	const ul = document.createElement('ul');
+	ul.className = 'news-list';
+	items.forEach(item => {
+		const li = document.createElement('li');
+		li.innerHTML =
+			'<span class="n-date">' + fmtDate(item.date) + '</span>' +
+			'<span class="n-title"><a href="' + item.link + '" target="_blank" rel="noopener">' +
+			item.title + '</a></span>';
+		ul.appendChild(li);
+	});
+	el.innerHTML = '';
+	el.appendChild(ul);
+}
+
+function showError(containerId, sourceName, fallbackUrl) {
+	document.getElementById(containerId).innerHTML =
+		'<div class="news-status error">' +
+		'⚠️ Неуспешно зареждане на новини от ' + sourceName + '.<br />' +
+		'<a href="' + fallbackUrl + '" target="_blank" rel="noopener" style="color:var(--accent)">Вижте директно на сайта →</a>' +
+		'</div>';
+}
+
+async function loadNOI() {
+	try {
+		const res  = await fetch('/.netlify/functions/noi-feed');
+		const data = await res.json();
+		if (data.ok && data.items.length) {
+			renderList('content-noi', 'updated-noi', data.items, 'НОИ');
+		} else {
+			showError('content-noi', 'НОИ', 'https://www.nssi.bg/publichnost/novini/');
+		}
+	} catch(e) {
+		showError('content-noi', 'НОИ', 'https://www.nssi.bg/publichnost/novini/');
+	}
+}
+
+async function loadNAP() {
+	try {
+		const res  = await fetch('/.netlify/functions/nap-news');
+		const data = await res.json();
+		if (data.ok && data.items.length) {
+			renderList('content-nap', 'updated-nap', data.items, 'НАП');
+		} else {
+			showError('content-nap', 'НАП', 'https://nra.bg/wps/portal/nra/actualno/actualno');
+		}
+	} catch(e) {
+		showError('content-nap', 'НАП', 'https://nra.bg/wps/portal/nra/actualno/actualno');
+	}
+}
+
+loadNAP();
+loadNOI();
+
+function switchSource(src) {
+	['nap','noi'].forEach(s => {
+		document.getElementById('tab-' + s).classList.toggle('active', s === src);
+		document.getElementById('panel-' + s).classList.toggle('active', s === src);
+	});
+}
+
+function fmtDate(d) {
+	if (!d || isNaN(d)) return '';
+	return d.getDate().toString().padStart(2,'0') + '.' +
+	       (d.getMonth()+1).toString().padStart(2,'0') + '.' +
+	       d.getFullYear();
+}
+
+function nowStamp() {
+	const n = new Date();
+	return 'Обновено: ' + fmtDate(n) + ' ' +
+		n.getHours().toString().padStart(2,'0') + ':' +
+		n.getMinutes().toString().padStart(2,'0');
+}
+
+function renderList(containerId, updatedId, items, sourceName) {
+	const el = document.getElementById(containerId);
+	if (!items.length) {
+		el.innerHTML = '<div class="news-status error">Няма намерени новини от ' + sourceName + '.</div>';
+		return;
+	}
+	document.getElementById(updatedId).textContent = nowStamp();
+	const ul = document.createElement('ul');
+	ul.className = 'news-list';
+	items.forEach(item => {
+		const li = document.createElement('li');
+		li.innerHTML =
+			'<span class="n-date">' + (item.date || '') + '</span>' +
+			'<span class="n-title"><a href="' + item.link + '" target="_blank" rel="noopener">' +
+			item.title + '</a></span>';
+		ul.appendChild(li);
+	});
+	el.innerHTML = '';
+	el.appendChild(ul);
+}
+
+function showError(containerId, sourceName) {
+	document.getElementById(containerId).innerHTML =
+		'<div class="news-status error">⚠️ Неуспешно зареждане на новини от ' + sourceName + '.<br />' +
+		'<small>Проверете връзката или опитайте по-късно.</small></div>';
+}
+
+loadNAP();
+loadNOI();
+</script>
+</body>
+</html>

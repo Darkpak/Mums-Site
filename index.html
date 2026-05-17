@@ -1,0 +1,406 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Счетоводна Кантора</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<style>
+		/* Contact form inside footer */
+		.contact-form-row {
+			display: flex;
+			gap: 1rem;
+			flex-wrap: wrap;
+			margin-bottom: .8rem;
+		}
+		.contact-form-row input,
+		.contact-form-row textarea,
+		.contact-form-row select {
+			flex: 1;
+			min-width: 0;
+			padding: .55rem .8rem;
+			border: 1px solid rgba(255,255,255,.2);
+			border-radius: 4px;
+			background: rgba(255,255,255,.07);
+			color: #fff;
+			font-size: .88rem;
+			font-family: inherit;
+			resize: vertical;
+		}
+		.contact-form-row input::placeholder,
+		.contact-form-row textarea::placeholder { color: rgba(255,255,255,.4); }
+		.contact-form-row textarea { min-height: 90px; }
+		#contact-form .btn-send {
+			background: #f56a6a;
+			color: #fff;
+			border: none;
+			padding: .65rem 1.8rem;
+			border-radius: 4px;
+			font-weight: 700;
+			font-size: .88rem;
+			cursor: pointer;
+			transition: background .2s;
+			font-family: inherit;
+		}
+		#contact-form .btn-send:hover { background: #d94f4f; }
+		.form-note {
+			font-size: .75rem;
+			color: rgba(255,255,255,.4);
+			margin-top: .5rem;
+		}
+
+		/* Feature boxes — keep images but add a hover */
+		#features-wrapper .box.feature { transition: transform .2s, box-shadow .2s; }
+		#features-wrapper .box.feature:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+
+		/* Quick-links in footer */
+		.widget.links ul.style2 li a { transition: color .15s; }
+	</style>
+</head>
+<body class="is-preload homepage">
+<div id="page-wrapper">
+
+	<!-- Header -->
+	<div id="header-wrapper">
+		<header id="header" class="container">
+
+			<!-- Logo -->
+			<div id="logo">
+				<h1><a href="index.html">Вашето Лого</a></h1>
+			</div>
+
+			<!-- Nav -->
+			<nav id="nav">
+				<ul>
+					<li class="current"><a href="index.html">Начало</a></li>
+					<li><a href="novini.html">Новини</a></li>
+					<li><a href="uslugi.html">Услуги</a></li>
+					<li><a href="calendar.html">Календар</a></li>
+					<li><a href="#contact">Контакти</a></li>
+				</ul>
+			</nav>
+
+		</header>
+	</div>
+
+	<!-- Banner -->
+	<div id="banner-wrapper">
+		<div id="banner" class="box container">
+			<div class="row">
+				<div class="col-7 col-12-medium">
+					<h2>Вашият надежден счетоводен партньор</h2>
+					<p>Професионално счетоводно обслужване за малки и средни фирми. Работим прецизно, в срок и с пълна отговорност.</p>
+				</div>
+				<div class="col-5 col-12-medium">
+					<ul>
+						<li><a href="uslugi.html" class="button large icon solid fa-arrow-circle-right">Нашите услуги</a></li>
+						<li><a href="#contact" class="button alt large icon solid fa-envelope">Свържете се с нас</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Features -->
+	<div id="features-wrapper">
+		<div class="container">
+			<div class="row">
+				<div class="col-4 col-12-medium">
+					<section class="box feature">
+						<a href="uslugi.html" class="image featured"><img src="images/pic01.jpg" alt="Счетоводство" /></a>
+						<div class="inner">
+							<header>
+								<h2>Счетоводство и данъци</h2>
+								<p>Пълно текущо обслужване</p>
+							</header>
+							<p>Осчетоводяване, ДДС декларации, данъчни справки и годишно приключване — всичко на едно място, коректно и в законовите срокове.</p>
+						</div>
+					</section>
+				</div>
+				<div class="col-4 col-12-medium">
+					<section class="box feature">
+						<a href="uslugi.html" class="image featured"><img src="images/pic02.jpg" alt="Заплати" /></a>
+						<div class="inner">
+							<header>
+								<h2>Заплати и осигуровки</h2>
+								<p>ТРЗ и социално осигуряване</p>
+							</header>
+							<p>Ведомости, трудови договори, декларации към НАП и НОИ. Изчисляване на отпуски, болнични и обезщетения без грешки.</p>
+						</div>
+					</section>
+				</div>
+				<div class="col-4 col-12-medium">
+					<section class="box feature">
+						<div class="inner" style="padding-top:1.4rem;">
+							<header>
+								<h2>Предстоящи срокове</h2>
+								<p>Данъчен и осигурителен календар</p>
+							</header>
+							<ul id="upcoming-deadlines" style="list-style:none;padding:0;margin:0 0 1rem;">
+								<li style="color:#aaa;font-size:.88rem;">Зареждане…</li>
+							</ul>
+							<a href="calendar.html" class="button icon solid fa-calendar-alt">Целият календар</a>
+						</div>
+					</section>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Main -->
+	<div id="main-wrapper">
+		<div class="container">
+			<div class="row gtr-200">
+				<div class="col-4 col-12-medium">
+
+					<!-- Sidebar -->
+					<div id="sidebar">
+						<section class="widget links">
+							<h3>Полезни връзки</h3>
+							<ul class="style2">
+								<li><a href="https://nra.bg" target="_blank" rel="noopener">НАП — nra.bg</a></li>
+								<li><a href="https://www.nssi.bg" target="_blank" rel="noopener">НОИ — nssi.bg</a></li>
+								<li><a href="https://www.nsi.bg" target="_blank" rel="noopener">НСИ — nsi.bg</a></li>
+								<li><a href="https://www.brra.bg" target="_blank" rel="noopener">Търговски регистър</a></li>
+								<li><a href="https://www.minfin.bg" target="_blank" rel="noopener">Министерство на финансите</a></li>
+							</ul>
+						</section>
+						<section class="widget links">
+							<h3>Важни срокове</h3>
+							<ul class="style2">
+								<li><a href="calendar.html">Данъчен календар 2026</a></li>
+								<li><a href="calendar.html">Осигурителен календар 2026</a></li>
+								<li><a href="novini.html">Актуални новини от НАП</a></li>
+								<li><a href="novini.html">Актуални новини от НОИ</a></li>
+							</ul>
+						</section>
+					</div>
+
+				</div>
+				<div class="col-8 col-12-medium imp-medium">
+
+					<!-- Content -->
+					<div id="content">
+						<section class="last">
+							<h2>За нас</h2>
+							<p>Ние сме <strong>счетоводна кантора</strong> с дългогодишен опит в обслужването на малки и средни предприятия в България. Нашата мисия е да освободим клиентите си от административната тежест, свързана с данъчното и осигурителното законодателство.</p>
+							<p>Работим индивидуално с всеки клиент — съобразяваме се с конкретните нужди на вашия бизнес, следим промените в нормативната база и ви уведомяваме навреме за всичко, което може да ви засегне. При нас получавате не просто счетоводител, а партньор, на когото можете да разчитате.</p>
+							<a href="uslugi.html" class="button icon solid fa-arrow-circle-right">Вижте всички услуги</a>
+						</section>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer / Contact -->
+	<div id="footer-wrapper">
+		<footer id="footer" class="container">
+			<div class="row">
+
+				<div class="col-3 col-6-medium col-12-small">
+					<section class="widget links">
+						<h3>Услуги</h3>
+						<ul class="style2">
+							<li><a href="uslugi.html">Счетоводно обслужване</a></li>
+							<li><a href="uslugi.html">Данъчни декларации</a></li>
+							<li><a href="uslugi.html">Заплати и ТРЗ</a></li>
+							<li><a href="uslugi.html">Регистрация на фирма</a></li>
+							<li><a href="uslugi.html">Годишни отчети</a></li>
+						</ul>
+					</section>
+				</div>
+
+				<div class="col-3 col-6-medium col-12-small">
+					<section class="widget links">
+						<h3>Навигация</h3>
+						<ul class="style2">
+							<li><a href="index.html">Начало</a></li>
+							<li><a href="uslugi.html">Услуги</a></li>
+							<li><a href="novini.html">Новини</a></li>
+							<li><a href="calendar.html">Данъчен календар</a></li>
+							<li><a href="#contact">Контакти</a></li>
+						</ul>
+					</section>
+				</div>
+
+				<div class="col-3 col-6-medium col-12-small">
+					<section class="widget links">
+						<h3>Институции</h3>
+						<ul class="style2">
+							<li><a href="https://nra.bg" target="_blank" rel="noopener">НАП</a></li>
+							<li><a href="https://www.nssi.bg" target="_blank" rel="noopener">НОИ</a></li>
+							<li><a href="https://www.nsi.bg" target="_blank" rel="noopener">НСИ</a></li>
+							<li><a href="https://www.brra.bg" target="_blank" rel="noopener">Търговски регистър</a></li>
+							<li><a href="https://www.minfin.bg" target="_blank" rel="noopener">МФ</a></li>
+						</ul>
+					</section>
+				</div>
+
+				<!-- Contact -->
+				<div class="col-3 col-6-medium col-12-small" id="contact">
+					<section class="widget contact last">
+						<h3>Контакти</h3>
+						<!-- Replace with real social links or remove -->
+						<ul>
+							<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+							<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+						</ul>
+						<!-- Replace with real address / phone / email -->
+						<p>
+							ул. „Примерна" № 1<br />
+							гр. София, 1000<br />
+							тел: 0888 000 000<br />
+							office@kantora.bg
+						</p>
+					</section>
+				</div>
+
+			</div>
+
+			<!-- Contact form row -->
+			<div class="row" style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,.1);">
+				<div class="col-12">
+					<h3 style="color:#fff; margin-bottom:1rem;">Изпратете запитване</h3>
+					<form id="contact-form" onsubmit="sendMail(event)">
+						<div class="contact-form-row">
+							<input type="text"  id="cf-name"    placeholder="Вашето име"        required />
+							<input type="email" id="cf-email"   placeholder="Имейл адрес"       required />
+							<input type="tel"   id="cf-phone"   placeholder="Телефон (незадължително)" />
+						</div>
+						<div class="contact-form-row">
+							<textarea id="cf-message" placeholder="Вашето съобщение или въпрос…" required></textarea>
+						</div>
+						<button type="submit" class="btn-send">Изпрати →</button>
+						<p class="form-note">Ще се свържем с вас до 1 работен ден.</p>
+					</form>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-12">
+					<div id="copyright">
+						<ul class="menu">
+							<li>&copy; Счетоводна Кантора. Всички права запазени.</li>
+							<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</div>
+
+</div>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.dropotron.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+
+<script>
+/* ── Upcoming deadlines widget ───────────────────────────────────
+   Shows the next 4 deadlines from the same data as calendar.html.
+   Keep this array in sync with calendar.html when updating.
+   ─────────────────────────────────────────────────────────────── */
+const DEADLINES = [
+	{ date:'2026-01-14', type:'dds',    title:'ДДС декларация — декември 2025' },
+	{ date:'2026-01-14', type:'osi',    title:'Декл. обр. 1 и 6 — декември 2025' },
+	{ date:'2026-01-31', type:'other',  title:'Данък върху разходите (чл. 204 ЗКПО)' },
+	{ date:'2026-01-31', type:'zddfll', title:'Данък доходи от наем — Q4 2025' },
+	{ date:'2026-02-14', type:'dds',    title:'ДДС декларация — януари 2026' },
+	{ date:'2026-02-14', type:'osi',    title:'Декл. обр. 1 и 6 — януари 2026' },
+	{ date:'2026-03-02', type:'zddfll', title:'Данък доходи на ЧЮЛ — Q4 2025' },
+	{ date:'2026-03-14', type:'dds',    title:'ДДС декларация — февруари 2026' },
+	{ date:'2026-03-14', type:'osi',    title:'Декл. обр. 1 и 6 — февруари 2026' },
+	{ date:'2026-03-31', type:'zkpo',   title:'Корпоративен данък — годишна декл. 2025' },
+	{ date:'2026-03-31', type:'other',  title:'Годишен финансов отчет — НСИ' },
+	{ date:'2026-04-14', type:'dds',    title:'ДДС декларация — март 2026' },
+	{ date:'2026-04-14', type:'osi',    title:'Декл. обр. 1 и 6 — март 2026' },
+	{ date:'2026-04-30', type:'zddfll', title:'Годишна данъчна декларация (ЗДДФЛ) 2025' },
+	{ date:'2026-04-30', type:'zddfll', title:'Данък доходи от наем — Q1 2026' },
+	{ date:'2026-05-14', type:'dds',    title:'ДДС декларация — април 2026' },
+	{ date:'2026-05-14', type:'osi',    title:'Декл. обр. 1 и 6 — април 2026' },
+	{ date:'2026-05-31', type:'other',  title:'ГФО в Търговски регистър' },
+	{ date:'2026-06-15', type:'dds',    title:'ДДС декларация — май 2026' },
+	{ date:'2026-06-15', type:'osi',    title:'Декл. обр. 1 и 6 — май 2026' },
+	{ date:'2026-06-30', type:'zkpo',   title:'Авансов корп. данък — Q2 2026' },
+	{ date:'2026-06-30', type:'zddfll', title:'Данък доходи от наем — Q2 2026' },
+	{ date:'2026-07-14', type:'dds',    title:'ДДС декларация — юни 2026' },
+	{ date:'2026-07-14', type:'osi',    title:'Декл. обр. 1 и 6 — юни 2026' },
+	{ date:'2026-08-14', type:'dds',    title:'ДДС декларация — юли 2026' },
+	{ date:'2026-08-14', type:'osi',    title:'Декл. обр. 1 и 6 — юли 2026' },
+	{ date:'2026-09-14', type:'dds',    title:'ДДС декларация — август 2026' },
+	{ date:'2026-09-14', type:'osi',    title:'Декл. обр. 1 и 6 — август 2026' },
+	{ date:'2026-09-30', type:'zkpo',   title:'Авансов корп. данък — Q3 2026' },
+	{ date:'2026-09-30', type:'zddfll', title:'Данък доходи от наем — Q3 2026' },
+	{ date:'2026-10-14', type:'dds',    title:'ДДС декларация — септември 2026' },
+	{ date:'2026-10-14', type:'osi',    title:'Декл. обр. 1 и 6 — септември 2026' },
+	{ date:'2026-11-14', type:'dds',    title:'ДДС декларация — октомври 2026' },
+	{ date:'2026-11-14', type:'osi',    title:'Декл. обр. 1 и 6 — октомври 2026' },
+	{ date:'2026-12-01', type:'zkpo',   title:'Авансов корп. данък — Q4 2026' },
+	{ date:'2026-12-14', type:'dds',    title:'ДДС декларация — ноември 2026' },
+	{ date:'2026-12-14', type:'osi',    title:'Декл. обр. 1 и 6 — ноември 2026' },
+	{ date:'2026-12-31', type:'zddfll', title:'Данък доходи от наем — Q4 2026' },
+];
+
+const TYPE_COLORS = { dds:'#6a9ff5', zkpo:'#f5a66a', zddfll:'#8ac98a', osi:'#c96af5', other:'#f5d76a' };
+const TYPE_LABELS = { dds:'ДДС', zkpo:'ЗКПО', zddfll:'ЗДДФЛ', osi:'Осиг.', other:'Друго' };
+const BG_MONTHS_S = ['яну','фев','мар','апр','май','юни','юли','авг','сеп','окт','ное','дек'];
+
+(function renderUpcoming() {
+	const today = new Date(); today.setHours(0,0,0,0);
+	const upcoming = DEADLINES
+		.map(e => ({ ...e, _d: new Date(e.date + 'T00:00:00') }))
+		.filter(e => e._d >= today)
+		.slice(0, 4);
+
+	const ul = document.getElementById('upcoming-deadlines');
+	if (!upcoming.length) {
+		ul.innerHTML = '<li style="color:#aaa;font-size:.85rem;">Няма предстоящи срокове.</li>';
+		return;
+	}
+	ul.innerHTML = upcoming.map(e => {
+		const d   = e._d;
+		const day = d.getDate();
+		const mon = BG_MONTHS_S[d.getMonth()];
+		const col = TYPE_COLORS[e.type] || '#ccc';
+		const lbl = TYPE_LABELS[e.type] || e.type;
+		const daysLeft = Math.round((d - today) / 86400000);
+		const urgency  = daysLeft <= 3 ? ' style="font-weight:700;color:#d94f4f;"' : '';
+		return `<li style="display:flex;align-items:center;gap:.7rem;padding:.5rem 0;border-bottom:1px solid #eee;">
+			<span style="flex-shrink:0;background:${col}22;border-left:3px solid ${col};border-radius:3px;padding:.25rem .5rem;font-size:.78rem;font-weight:700;color:${col};min-width:38px;text-align:center;line-height:1.2;">${day}<br/>${mon}</span>
+			<span style="flex:1;font-size:.82rem;line-height:1.35;"${urgency}>${e.title}</span>
+			<span style="flex-shrink:0;font-size:.7rem;color:#aaa;">${lbl}</span>
+		</li>`;
+	}).join('');
+})();
+</script>
+
+<script>
+/* ── Simple mailto contact form ──────────────────────────────────
+   Replace the email address below with your relative's real one.
+   For a proper backend form later, swap this for a Netlify Form
+   (just add name="contact" data-netlify="true" to the <form> tag
+   and Netlify handles everything for free, no server needed).
+   ─────────────────────────────────────────────────────────────── */
+function sendMail(e) {
+	e.preventDefault();
+	const name    = document.getElementById('cf-name').value.trim();
+	const email   = document.getElementById('cf-email').value.trim();
+	const phone   = document.getElementById('cf-phone').value.trim();
+	const message = document.getElementById('cf-message').value.trim();
+	const body    = encodeURIComponent(
+		'Ime: ' + name + '\n' +
+		'Email: ' + email + '\n' +
+		(phone ? 'Telefon: ' + phone + '\n' : '') +
+		'\n' + message
+	);
+	/* ← Replace with the real email address */
+	window.location.href = 'mailto:office@kantora.bg?subject=Запитване от сайта&body=' + body;
+}
+</script>
+</body>
+</html>

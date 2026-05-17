@@ -1,0 +1,403 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Данъчен Календар 2026 | Счетоводна Кантора</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<style>
+		:root {
+			--accent:    #f56a6a;
+			--accent-dk: #d94f4f;
+			--border:    #e4e4e4;
+			--text:      #3d3d3d;
+			--muted:     #999;
+			--radius:    8px;
+			--today-bg:  #fff8e1;
+			--today-bd:  #f5c842;
+			--past-col:  #bbb;
+		}
+
+		/* ── Type filter tabs ── */
+		.cal-filter-bar {
+			display: flex;
+			flex-wrap: wrap;
+			gap: .5rem;
+			margin-bottom: 1.8rem;
+		}
+		.filter-btn {
+			padding: .4rem 1.1rem;
+			border-radius: 20px;
+			border: 2px solid var(--border);
+			background: transparent;
+			font-size: .82rem;
+			font-weight: 700;
+			color: var(--muted);
+			cursor: pointer;
+			font-family: inherit;
+			transition: all .2s;
+		}
+		.filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+		.filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+		/* ── Month group ── */
+		.month-group { margin-bottom: 2rem; }
+		.month-heading {
+			font-size: .78rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: .1em;
+			color: var(--muted);
+			padding: .4rem 0;
+			border-bottom: 2px solid var(--border);
+			margin-bottom: .6rem;
+		}
+
+		/* ── Deadline row ── */
+		.deadline-list { list-style: none; padding: 0; margin: 0; }
+		.deadline-list li {
+			display: flex;
+			align-items: flex-start;
+			gap: 1rem;
+			padding: .75rem .9rem;
+			border-radius: var(--radius);
+			margin-bottom: .35rem;
+			border-left: 4px solid transparent;
+			background: #f9f9f9;
+			transition: background .15s;
+		}
+		.deadline-list li:hover { background: #f3f3f3; }
+
+		/* Past deadlines — greyed out */
+		.deadline-list li.past {
+			opacity: .5;
+			border-left-color: var(--border) !important;
+		}
+
+		/* Today / this week highlight */
+		.deadline-list li.today {
+			background: var(--today-bg);
+			border-left-color: var(--today-bd) !important;
+		}
+
+		/* Type colours */
+		.deadline-list li.type-dds    { border-left-color: #6a9ff5; }
+		.deadline-list li.type-zkpo   { border-left-color: #f5a66a; }
+		.deadline-list li.type-zddfll { border-left-color: #8ac98a; }
+		.deadline-list li.type-osi    { border-left-color: #c96af5; }
+		.deadline-list li.type-other  { border-left-color: #f5d76a; }
+
+		.dl-date {
+			flex-shrink: 0;
+			font-size: .82rem;
+			font-weight: 700;
+			color: var(--text);
+			min-width: 70px;
+			padding-top: .1rem;
+		}
+		.dl-date .dl-day { font-size: 1.3rem; line-height: 1; display: block; }
+
+		.dl-body { flex: 1; }
+		.dl-body .dl-title {
+			font-size: .9rem;
+			color: var(--text);
+			font-weight: 600;
+			margin-bottom: .15rem;
+		}
+		.dl-body .dl-desc {
+			font-size: .8rem;
+			color: var(--muted);
+			line-height: 1.45;
+		}
+
+		.dl-tag {
+			flex-shrink: 0;
+			font-size: .68rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: .05em;
+			padding: .25rem .6rem;
+			border-radius: 20px;
+			background: var(--border);
+			color: var(--muted);
+		}
+		li.type-dds    .dl-tag { background: #daeaff; color: #3568c9; }
+		li.type-zkpo   .dl-tag { background: #ffeedd; color: #c46a1a; }
+		li.type-zddfll .dl-tag { background: #e4f5e4; color: #3a8a3a; }
+		li.type-osi    .dl-tag { background: #f0e0ff; color: #8a2fc9; }
+		li.type-other  .dl-tag { background: #fef8dc; color: #9a7d0a; }
+
+		.hidden { display: none !important; }
+
+		/* ── Legend ── */
+		.cal-legend {
+			display: flex;
+			flex-wrap: wrap;
+			gap: .6rem 1.4rem;
+			font-size: .78rem;
+			color: var(--muted);
+			margin-bottom: 1.6rem;
+		}
+		.cal-legend span::before {
+			content: '●';
+			margin-right: .35rem;
+		}
+		.cal-legend .l-dds::before    { color: #6a9ff5; }
+		.cal-legend .l-zkpo::before   { color: #f5a66a; }
+		.cal-legend .l-zddfll::before { color: #8ac98a; }
+		.cal-legend .l-osi::before    { color: #c96af5; }
+		.cal-legend .l-other::before  { color: #f5d76a; }
+
+		/* ── PDF note ── */
+		.pdf-note {
+			background: #f9f9f9;
+			border: 1px solid var(--border);
+			border-left: 4px solid var(--accent);
+			border-radius: var(--radius);
+			padding: .9rem 1.2rem;
+			font-size: .82rem;
+			color: var(--muted);
+			margin-top: 2rem;
+		}
+		.pdf-note a { color: var(--accent-dk); }
+
+		/* No results */
+		.no-results {
+			text-align: center;
+			padding: 2.5rem 1rem;
+			color: var(--muted);
+			font-size: .9rem;
+		}
+	</style>
+</head>
+<body class="is-preload">
+<div id="page-wrapper">
+
+	<div id="header-wrapper">
+		<header id="header" class="container">
+			<div id="logo">
+				<h1><a href="index.html">Вашето Лого</a></h1>
+			</div>
+			<nav id="nav">
+				<ul>
+					<li><a href="index.html">Начало</a></li>
+					<li><a href="novini.html">Новини</a></li>
+					<li><a href="uslugi.html">Услуги</a></li>
+					<li class="current"><a href="calendar.html">Календар</a></li>
+					<li><a href="index.html#contact">Контакти</a></li>
+				</ul>
+			</nav>
+		</header>
+	</div>
+
+	<div id="main-wrapper">
+		<div class="container">
+			<div id="content">
+				<article>
+
+					<header class="major">
+						<h2>Данъчен и Осигурителен Календар 2026</h2>
+						<p>Важни срокове за деклариране и плащане на данъци и осигуровки съгласно<br />
+						действащото българско законодателство. Предстоящите срокове са маркирани в горната част.</p>
+					</header>
+
+					<!-- Legend -->
+					<div class="cal-legend">
+						<span class="l-dds">ДДС</span>
+						<span class="l-zkpo">ЗКПО / Корпоративен данък</span>
+						<span class="l-zddfll">ЗДДФЛ / Данък доходи</span>
+						<span class="l-osi">Осигуровки / НОИ</span>
+						<span class="l-other">Други</span>
+					</div>
+
+					<!-- Filter buttons -->
+					<div class="cal-filter-bar">
+						<button class="filter-btn active" onclick="filterCal('all', this)">Всички</button>
+						<button class="filter-btn" onclick="filterCal('dds', this)">ДДС</button>
+						<button class="filter-btn" onclick="filterCal('zkpo', this)">ЗКПО</button>
+						<button class="filter-btn" onclick="filterCal('zddfll', this)">ЗДДФЛ</button>
+						<button class="filter-btn" onclick="filterCal('osi', this)">Осигуровки</button>
+						<button class="filter-btn" onclick="filterCal('other', this)">Други</button>
+					</div>
+
+					<!-- Calendar entries rendered by JS -->
+					<div id="cal-output"></div>
+
+					<div class="pdf-note">
+						📄 Данните са въз основа на официалния <strong>Данъчен и Осигурителен календар на НАП за 2026 г.</strong>
+						Пълният официален документ може да бъде изтеглен от
+						<a href="https://nra.bg/wps/portal/nra/calendar/calendar" target="_blank" rel="noopener">nra.bg →</a><br />
+						При промени в законодателството сроковете могат да бъдат актуализирани.
+					</div>
+
+				</article>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.dropotron.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+
+<script>
+/* ================================================================
+   CALENDAR DATA
+   ─────────────────────────────────────────────────────────────────
+   Each entry: { date: 'YYYY-MM-DD', type: string, title: string, desc: string }
+   Types: 'dds' | 'zkpo' | 'zddfll' | 'osi' | 'other'
+
+   TO UPDATE: edit the DEADLINES array below.
+   When НАП publishes the new annual calendar PDF, update the dates
+   here and the year in the <title> and <h2> above.
+   ================================================================ */
+
+const DEADLINES = [
+	/* ── ЯНУАРИ ── */
+	{ date:'2026-01-14', type:'dds',    title:'ДДС декларация — декември 2025', desc:'Подаване на справка-декларация по ЗДДС и VIES декларация за декември 2025 г.' },
+	{ date:'2026-01-14', type:'osi',    title:'Декл. обр. 1 и 6 — декември 2025', desc:'Подаване на декларации обр. 1 и обр. 6 за осигуровки за декември 2025 г.' },
+	{ date:'2026-01-31', type:'other',  title:'Данък върху разходите (чл. 204 ЗКПО)', desc:'Деклариране и внасяне на данък върху представителните разходи и разходи за персонал за 2025 г.' },
+	{ date:'2026-01-31', type:'zddfll', title:'Данък върху доходи от наем — Q4 2025', desc:'Деклариране и внасяне на авансов данък върху доходи от наем за IV-то тримесечие на 2025 г.' },
+
+	/* ── ФЕВРУАРИ ── */
+	{ date:'2026-02-14', type:'dds',    title:'ДДС декларация — януари 2026', desc:'Подаване на справка-декларация по ЗДДС и VIES декларация за януари 2026 г.' },
+	{ date:'2026-02-14', type:'osi',    title:'Декл. обр. 1 и 6 — януари 2026', desc:'Подаване на декларации обр. 1 и обр. 6 за осигуровки за януари 2026 г.' },
+
+	/* ── МАРТ ── */
+	{ date:'2026-03-02', type:'zddfll', title:'Данък върху доходи на ЧЮЛ — Q4 2025', desc:'Деклариране и внасяне на данък при източника върху доходи на чуждестранни юридически лица.' },
+	{ date:'2026-03-14', type:'dds',    title:'ДДС декларация — февруари 2026', desc:'Подаване на справка-декларация по ЗДДС и VIES декларация за февруари 2026 г.' },
+	{ date:'2026-03-14', type:'osi',    title:'Декл. обр. 1 и 6 — февруари 2026', desc:'Подаване на декларации обр. 1 и обр. 6 за осигуровки за февруари 2026 г.' },
+	{ date:'2026-03-31', type:'zkpo',   title:'Корпоративен данък — годишна декларация 2025', desc:'Подаване на годишна данъчна декларация по ЗКПО за 2025 г. и внасяне на дължимия данък.' },
+	{ date:'2026-03-31', type:'other',  title:'Годишен финансов отчет — НСИ', desc:'Подаване на ГФО към НСИ (за предприятия, задължени по Закона за счетоводството).' },
+
+	/* ── АПРИЛ ── */
+	{ date:'2026-04-14', type:'dds',    title:'ДДС декларация — март 2026', desc:'Подаване на справка-декларация по ЗДДС и VIES декларация за март 2026 г.' },
+	{ date:'2026-04-14', type:'osi',    title:'Декл. обр. 1 и 6 — март 2026', desc:'Подаване на декларации обр. 1 и обр. 6 за осигуровки за март 2026 г.' },
+	{ date:'2026-04-30', type:'zddfll', title:'Годишна данъчна декларация (ЗДДФЛ) 2025', desc:'Краен срок за подаване на годишна данъчна декларация по ЗДДФЛ за доходи от 2025 г. от физически лица.' },
+	{ date:'2026-04-30', type:'zddfll', title:'Данък върху доходи от наем — Q1 2026', desc:'Деклариране и внасяне на авансов данък върху доходи от наем за I-во тримесечие на 2026 г.' },
+
+	/* ── МАЙ ── */
+	{ date:'2026-05-14', type:'dds',    title:'ДДС декларация — април 2026', desc:'Подаване на справка-декларация по ЗДДС и VIES декларация за април 2026 г.' },
+	{ date:'2026-05-14', type:'osi',    title:'Декл. обр. 1 и 6 — април 2026', desc:'Подаване на декларации обр. 1 и обр. 6 за осигуровки за април 2026 г.' },
+	{ date:'2026-05-31', type:'other',  title:'ГФО в Търговски регистър', desc:'Краен срок за публикуване на Годишния финансов отчет за 2025 г. в Търговския регистър.' },
+
+	/* ── ЮНИ ── */
+	{ date:'2026-06-15', type:'dds',    title:'ДДС декларация — май 2026', desc:'Подаване на справка-декларация по ЗДДС и VIES декларация за май 2026 г.' },
+	{ date:'2026-06-15', type:'osi',    title:'Декл. обр. 1 и 6 — май 2026', desc:'Подаване на декларации обр. 1 и обр. 6 за осигуровки за май 2026 г.' },
+	{ date:'2026-06-30', type:'zkpo',   title:'Авансов корпоративен данък — Q2 2026', desc:'Внасяне на тримесечен авансов корпоративен данък за второ тримесечие.' },
+	{ date:'2026-06-30', type:'zddfll', title:'Данък върху доходи от наем — Q2 2026', desc:'Деклариране и внасяне на авансов данък върху доходи от наем за II-ро тримесечие на 2026 г.' },
+
+	/* ── ЮЛИ ── */
+	{ date:'2026-07-14', type:'dds',    title:'ДДС декларация — юни 2026', desc:'Подаване на справка-декларация по ЗДДС и VIES декларация за юни 2026 г.' },
+	{ date:'2026-07-14', type:'osi',    title:'Декл. обр. 1 и 6 — юни 2026', desc:'Подаване на декларации обр. 1 и обр. 6 за осигуровки за юни 2026 г.' },
+
+	/* ── АВГУСТ ── */
+	{ date:'2026-08-14', type:'dds',    title:'ДДС декларация — юли 2026', desc:'Подаване на справка-декларация по ЗДДС и VIES декларация за юли 2026 г.' },
+	{ date:'2026-08-14', type:'osi',    title:'Декл. обр. 1 и 6 — юли 2026', desc:'Подаване на декларации обр. 1 и обр. 6 за осигуровки за юли 2026 г.' },
+
+	/* ── СЕПТЕМВРИ ── */
+	{ date:'2026-09-14', type:'dds',    title:'ДДС декларация — август 2026', desc:'Подаване на справка-декларация по ЗДДС и VIES декларация за август 2026 г.' },
+	{ date:'2026-09-14', type:'osi',    title:'Декл. обр. 1 и 6 — август 2026', desc:'Подаване на декларации обр. 1 и обр. 6 за осигуровки за август 2026 г.' },
+	{ date:'2026-09-30', type:'zkpo',   title:'Авансов корпоративен данък — Q3 2026', desc:'Внасяне на тримесечен авансов корпоративен данък за трето тримесечие.' },
+	{ date:'2026-09-30', type:'zddfll', title:'Данък върху доходи от наем — Q3 2026', desc:'Деклариране и внасяне на авансов данък върху доходи от наем за III-то тримесечие на 2026 г.' },
+
+	/* ── ОКТОМВРИ ── */
+	{ date:'2026-10-14', type:'dds',    title:'ДДС декларация — септември 2026', desc:'Подаване на справка-декларация по ЗДДС и VIES декларация за септември 2026 г.' },
+	{ date:'2026-10-14', type:'osi',    title:'Декл. обр. 1 и 6 — септември 2026', desc:'Подаване на декларации обр. 1 и обр. 6 за осигуровки за септември 2026 г.' },
+
+	/* ── НОЕМВРИ ── */
+	{ date:'2026-11-14', type:'dds',    title:'ДДС декларация — октомври 2026', desc:'Подаване на справка-декларация по ЗДДС и VIES декларация за октомври 2026 г.' },
+	{ date:'2026-11-14', type:'osi',    title:'Декл. обр. 1 и 6 — октомври 2026', desc:'Подаване на декларации обр. 1 и обр. 6 за осигуровки за октомври 2026 г.' },
+
+	/* ── ДЕКЕМВРИ ── */
+	{ date:'2026-12-01', type:'zkpo',   title:'Авансов корпоративен данък — Q4 2026', desc:'Внасяне на тримесечен авансов корпоративен данък за четвърто тримесечие.' },
+	{ date:'2026-12-14', type:'dds',    title:'ДДС декларация — ноември 2026', desc:'Подаване на справка-декларация по ЗДДС и VIES декларация за ноември 2026 г.' },
+	{ date:'2026-12-14', type:'osi',    title:'Декл. обр. 1 и 6 — ноември 2026', desc:'Подаване на декларации обр. 1 и обр. 6 за осигуровки за ноември 2026 г.' },
+	{ date:'2026-12-31', type:'zddfll', title:'Данък върху доходи от наем — Q4 2026', desc:'Деклариране и внасяне на авансов данък върху доходи от наем за IV-то тримесечие на 2026 г.' },
+];
+
+/* ── Month names in Bulgarian ── */
+const BG_MONTHS_LONG = [
+	'Януари','Февруари','Март','Април','Май','Юни',
+	'Юли','Август','Септември','Октомври','Ноември','Декември'
+];
+const BG_DAYS = ['нед','пон','вт','ср','чет','пет','съб'];
+
+const TYPE_LABELS = { dds:'ДДС', zkpo:'ЗКПО', zddfll:'ЗДДФЛ', osi:'Осигуровки', other:'Друго' };
+
+let activeFilter = 'all';
+
+function filterCal(type, btn) {
+	activeFilter = type;
+	document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+	btn.classList.add('active');
+	renderCal();
+}
+
+function renderCal() {
+	const today = new Date();
+	today.setHours(0,0,0,0);
+	const weekAhead = new Date(today); weekAhead.setDate(today.getDate() + 7);
+
+	/* Filter entries */
+	const entries = DEADLINES.filter(e =>
+		activeFilter === 'all' || e.type === activeFilter
+	);
+
+	if (!entries.length) {
+		document.getElementById('cal-output').innerHTML =
+			'<div class="no-results">Няма намерени срокове за избрания филтър.</div>';
+		return;
+	}
+
+	/* Group by month */
+	const groups = {};
+	entries.forEach(e => {
+		const d = new Date(e.date + 'T00:00:00');
+		const key = d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
+		if (!groups[key]) groups[key] = { label: BG_MONTHS_LONG[d.getMonth()] + ' ' + d.getFullYear(), items: [] };
+		groups[key].items.push({ ...e, _d: d });
+	});
+
+	/* Sort upcoming first within each group, past at bottom */
+	let html = '';
+	Object.values(groups).forEach(g => {
+		html += '<div class="month-group"><div class="month-heading">' + g.label + '</div>';
+		html += '<ul class="deadline-list">';
+		g.items.forEach(item => {
+			const d = item._d;
+			const isPast   = d < today;
+			const isToday  = d.getTime() === today.getTime();
+			const isSoon   = !isPast && d <= weekAhead;
+			const dayName  = BG_DAYS[d.getDay()];
+			const dayNum   = d.getDate();
+			const monShort = BG_MONTHS_LONG[d.getMonth()].slice(0,3).toLowerCase();
+			let cls = 'type-' + item.type;
+			if (isPast)  cls += ' past';
+			if (isToday) cls += ' today';
+			html += `<li class="${cls}">
+				<div class="dl-date">
+					<span class="dl-day">${dayNum}</span>
+					${monShort} · ${dayName}
+				</div>
+				<div class="dl-body">
+					<div class="dl-title">${item.title}${isToday ? ' &nbsp;🔔' : ''}${isSoon && !isToday ? ' &nbsp;⏰' : ''}</div>
+					<div class="dl-desc">${item.desc}</div>
+				</div>
+				<span class="dl-tag">${TYPE_LABELS[item.type] || item.type}</span>
+			</li>`;
+		});
+		html += '</ul></div>';
+	});
+
+	document.getElementById('cal-output').innerHTML = html;
+}
+
+renderCal();
+</script>
+</body>
+</html>

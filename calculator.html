@@ -1,0 +1,371 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Ценови Калкулатор | Счетоводна Кантора</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<style>
+		/* ── Calculator-specific styles ── */
+		:root {
+			--accent:    #f56a6a;
+			--accent-dk: #d94f4f;
+			--bg:        #ffffff;
+			--card:      #f9f9f9;
+			--border:    #e4e4e4;
+			--text:      #3d3d3d;
+			--muted:     #888;
+			--radius:    10px;
+		}
+
+		.calc-wrap { max-width: 740px; margin: 0 auto; font-family: inherit; }
+
+		/* ── Progress bar ── */
+		.calc-progress { display: flex; align-items: center; margin-bottom: 2.5rem; gap: 0; }
+		.calc-progress .step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; cursor: default; }
+		.calc-progress .step::after { content: ''; position: absolute; top: 18px; left: 50%; width: 100%; height: 3px; background: var(--border); z-index: 0; }
+		.calc-progress .step:last-child::after { display: none; }
+		.calc-progress .step-dot {
+			width: 36px; height: 36px; border-radius: 50%; border: 3px solid var(--border); background: var(--bg);
+			display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .85rem;
+			color: var(--muted); position: relative; z-index: 1; transition: all .3s;
+		}
+		.calc-progress .step.done .step-dot { background: var(--accent); border-color: var(--accent); color: #fff; }
+		.calc-progress .step.done::after { background: var(--accent); }
+		.calc-progress .step.active .step-dot { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 4px rgba(245,106,106,.15); }
+		.calc-progress .step-label { font-size: .72rem; margin-top: .4rem; color: var(--muted); text-align: center; text-transform: uppercase; letter-spacing: .04em; }
+		.calc-progress .step.active .step-label, .calc-progress .step.done .step-label { color: var(--accent); }
+
+		/* ── Card panel & Options ── */
+		.calc-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.2rem 2.5rem; margin-bottom: 1.5rem; }
+		.calc-card h3 { margin: 0 0 .4rem; font-size: 1.15rem; color: var(--text); }
+		.calc-card .subtitle { font-size: .88rem; color: var(--muted); margin-bottom: 1.6rem; }
+
+		.option-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: .75rem; }
+		.option-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+		.opt-card { position: relative; }
+		.opt-card input[type="radio"], .opt-card input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
+		.opt-card label {
+			display: flex; flex-direction: column; align-items: center; text-align: center; padding: 1rem .8rem;
+			border: 2px solid var(--border); border-radius: var(--radius); background: var(--bg); cursor: pointer;
+			transition: border-color .2s, background .2s, transform .15s; font-size: .88rem; color: var(--text); line-height: 1.35; min-height: 76px; justify-content: center;
+		}
+		.opt-card label .icon { font-size: 1.5rem; margin-bottom: .4rem; display: block; }
+		.opt-card input:checked + label { border-color: var(--accent); background: #fff5f5; color: var(--accent-dk); font-weight: 600; }
+		.opt-card label:hover { border-color: #f9a8a8; transform: translateY(-2px); }
+
+		/* ── Sliders ── */
+		.slider-row { margin-bottom: 1.4rem; }
+		.slider-row label { display: flex; justify-content: space-between; margin-bottom: .5rem; font-size: .9rem; color: var(--text); }
+		.slider-row label span { font-weight: 700; color: var(--accent); }
+		.slider-row input[type=range] {
+			-webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px;
+			background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--val, 0%), var(--border) var(--val, 0%)); outline: none; cursor: pointer;
+		}
+		.slider-row input[type=range]::-webkit-slider-thumb {
+			-webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+			background: var(--accent); border: 3px solid #fff; box-shadow: 0 1px 5px rgba(0,0,0,.2);
+		}
+		.slider-ticks { display: flex; justify-content: space-between; font-size: .72rem; color: var(--muted); margin-top: .3rem; padding: 0 2px; }
+
+		/* ── Navigation ── */
+		.calc-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+		.btn-calc { padding: .7rem 2rem; border-radius: 6px; font-size: .9rem; font-weight: 700; border: none; cursor: pointer; transition: background .2s, transform .1s; letter-spacing: .04em; }
+		.btn-calc:active { transform: scale(.97); }
+		.btn-next { background: var(--accent); color: #fff !important; margin-left: auto; text-decoration: none; }
+		.btn-next:hover { background: var(--accent-dk); }
+		.btn-back { background: transparent; color: var(--muted) !important; border: 2px solid var(--border) !important; text-decoration: none; }
+		.btn-back:hover { border-color: #ccc !important; color: var(--text) !important; }
+
+		/* ── Result Card ── */
+		.result-card { background: linear-gradient(135deg, #fff5f5 0%, #fff 100%); border: 2px solid var(--accent); border-radius: var(--radius); padding: 2.5rem; text-align: center; }
+		.result-card .result-label { font-size: .85rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: .5rem; }
+		.result-card .price-range { font-size: 2.8rem; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: .4rem; }
+		.result-card .price-note { font-size: .82rem; color: var(--muted); margin-bottom: 1.8rem; }
+		.result-card .result-breakdown { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem 1.5rem; text-align: left; margin-bottom: 1.8rem; }
+		.result-card .result-breakdown h4 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 .8rem; }
+		.result-card .result-breakdown ul { list-style: none; padding: 0; margin: 0; }
+		.result-card .result-breakdown li { display: flex; justify-content: space-between; font-size: .88rem; color: var(--text); padding: .35rem 0; border-bottom: 1px solid var(--border); }
+		.result-card .result-breakdown li:last-child { border-bottom: none; }
+		.result-card .result-breakdown li span { font-weight: 600; color: var(--accent-dk); }
+		.result-card .cta-row { display: flex; gap: .8rem; justify-content: center; flex-wrap: wrap; }
+		.btn-cta-primary { background: var(--accent); color: #fff !important; padding: .8rem 2.2rem; border-radius: 6px; font-weight: 700; font-size: .9rem; text-decoration: none; transition: background .2s; }
+		.btn-cta-primary:hover { background: var(--accent-dk); }
+		.btn-cta-secondary { background: transparent; color: var(--accent) !important; padding: .8rem 2.2rem; border-radius: 6px; font-weight: 700; font-size: .9rem; border: 2px solid var(--accent); cursor: pointer; transition: all .2s; }
+		.btn-cta-secondary:hover { background: #fff5f5; }
+		.calc-disclaimer { font-size: .78rem; color: var(--muted); background: #fafafa; border-left: 3px solid var(--border); padding: .8rem 1rem; border-radius: 0 6px 6px 0; margin-top: 1.5rem; }
+
+		.calc-step { display: none; }
+		.calc-step.active { display: block; }
+
+		@media (max-width: 600px) {
+			.calc-card { padding: 1.4rem 1.2rem; }
+			.option-grid { grid-template-columns: 1fr 1fr; }
+			.calc-progress .step-label { display: none; }
+			.result-card .price-range { font-size: 2rem; }
+		}
+	</style>
+</head>
+<body class="is-preload">
+	<div id="page-wrapper">
+
+		<div id="header-wrapper">
+			<header id="header" class="container">
+				<div id="logo">
+					<h1><a href="index.html">Вашето Лого</a></h1>
+				</div>
+				<nav id="nav">
+					<ul>
+						<li><a href="index.html">Начало</a></li>
+						<li><a href="novini.html">Новини</a></li>
+						<li><a href="uslugi.html">Услуги</a></li>
+						<li><a href="calendar.html">Календар</a></li>
+						<li><a href="index.html#contact">Контакти</a></li>
+					</ul>
+				</nav>
+			</header>
+		</div>
+
+		<div id="main-wrapper">
+			<div class="container">
+				<div id="content">
+					<article>
+						<header class="major">
+							<h2>Ценови Калкулатор</h2>
+							<p>Отговорете на няколко въпроса и получете <strong>незабавна оценка</strong> за месечно счетоводно обслужване.<br>Всички показани цени са ориентировъчни.</p>
+						</header>
+
+						<div class="calc-wrap">
+							<div class="calc-progress" id="calcProgress">
+								<div class="step active" data-step="1"><div class="step-dot">1</div><div class="step-label">Фирма</div></div>
+								<div class="step" data-step="2"><div class="step-dot">2</div><div class="step-label">ДДС</div></div>
+								<div class="step" data-step="3"><div class="step-dot">3</div><div class="step-label">Обем</div></div>
+								<div class="step" data-step="4"><div class="step-dot">4</div><div class="step-label">Екип</div></div>
+								<div class="step" data-step="5"><div class="step-dot">5</div><div class="step-label">Екстри</div></div>
+								<div class="step" data-step="6"><div class="step-dot">✓</div><div class="step-label">Резултат</div></div>
+							</div>
+
+							<div class="calc-step active" id="step-1">
+								<div class="calc-card">
+									<h3>Какъв тип е вашият бизнес?</h3>
+									<div class="subtitle">Изберете правната форма на вашата компания</div>
+									<div class="option-grid">
+										<div class="opt-card"><input type="radio" name="bizType" id="bt1" value="et"><label for="bt1"><span class="icon">👤</span>Едноличен търговец (ЕТ)</label></div>
+										<div class="opt-card"><input type="radio" name="bizType" id="bt2" value="ood"><label for="bt2"><span class="icon">🏢</span>Дружество (ООД)</label></div>
+										<div class="opt-card"><input type="radio" name="bizType" id="bt3" value="eood"><label for="bt3"><span class="icon">🏢</span>Еднолично дружество (ЕООД)</label></div>
+										<div class="opt-card"><input type="radio" name="bizType" id="bt4" value="ad"><label for="bt4"><span class="icon">🏦</span>Акционерно дружество (АД)</label></div>
+										<div class="opt-card"><input type="radio" name="bizType" id="bt5" value="npo"><label for="bt5"><span class="icon">🤝</span>НПО</label></div>
+										<div class="opt-card"><input type="radio" name="bizType" id="bt6" value="freelance"><label for="bt6"><span class="icon">💼</span>Свободна професия</label></div>
+									</div>
+								</div>
+								<div class="calc-nav"><button class="btn-calc btn-next" onclick="nextStep(1)">Напред →</button></div>
+							</div>
+
+							<div class="calc-step" id="step-2">
+								<div class="calc-card">
+									<h3>Имате ли регистрация по ДДС?</h3>
+									<div class="subtitle">Регистрацията по ДДС значително влияе на обема счетоводна работа</div>
+									<div class="option-grid cols-2">
+										<div class="opt-card"><input type="radio" name="vatReg" id="vat1" value="no"><label for="vat1"><span class="icon">❌</span>Нямам регистрация</label></div>
+										<div class="opt-card"><input type="radio" name="vatReg" id="vat2" value="yes"><label for="vat2"><span class="icon">✅</span>Имам регистрация</label></div>
+									</div>
+								</div>
+								<div class="calc-nav">
+									<button class="btn-calc btn-back" onclick="prevStep(2)">← Назад</button>
+									<button class="btn-calc btn-next" onclick="nextStep(2)">Напред →</button>
+								</div>
+							</div>
+
+							<div class="calc-step" id="step-3">
+								<div class="calc-card">
+									<h3>Месечен обем на дейност</h3>
+									<div class="subtitle">Плъзнете, за да зададете приблизителни месечни стойности</div>
+									<div class="slider-row">
+										<label>Документи / фактури на месец <span id="docVal">1–20</span></label>
+										<input type="range" id="docSlider" min="0" max="4" value="0" oninput="updateSlider(this,'docVal',['1–20','21–50','51–100','101–200','над 200'])" style="--val:0%">
+										<div class="slider-ticks"><span>1–20</span><span>21–50</span><span>51–100</span><span>101–200</span><span>над 200</span></div>
+									</div>
+									<div class="slider-row">
+										<label>Касови апарати / ПОС терминали <span id="cashVal">Няма</span></label>
+										<input type="range" id="cashSlider" min="0" max="3" value="0" oninput="updateSlider(this,'cashVal',['Няма','1','2–3','над 4'])" style="--val:0%">
+										<div class="slider-ticks"><span>Няма</span><span>1</span><span>2–3</span><span>над 4</span></div>
+									</div>
+									<div class="slider-row">
+										<label>Търговски обекти / филиали <span id="locVal">1</span></label>
+										<input type="range" id="locSlider" min="0" max="3" value="0" oninput="updateSlider(this,'locVal',['1','2–3','4–6','над 7'])" style="--val:0%">
+										<div class="slider-ticks"><span>1</span><span>2–3</span><span>4–6</span><span>над 7</span></div>
+									</div>
+								</div>
+								<div class="calc-nav">
+									<button class="btn-calc btn-back" onclick="prevStep(3)">← Назад</button>
+									<button class="btn-calc btn-next" onclick="nextStep(3)">Напред →</button>
+								</div>
+							</div>
+
+							<div class="calc-step" id="step-4">
+								<div class="calc-card">
+									<h3>Колко служители имате?</h3>
+									<div class="subtitle">Включва хора на трудов договор</div>
+									<div class="option-grid">
+										<div class="opt-card"><input type="radio" name="employees" id="emp0" value="0"><label for="emp0"><span class="icon">🙋</span>Само аз<br><small>(само собственик)</small></label></div>
+										<div class="opt-card"><input type="radio" name="employees" id="emp1" value="1"><label for="emp1"><span class="icon">👥</span>1–3 служители</label></div>
+										<div class="opt-card"><input type="radio" name="employees" id="emp2" value="2"><label for="emp2"><span class="icon">👥</span>4–10 служители</label></div>
+										<div class="opt-card"><input type="radio" name="employees" id="emp3" value="3"><label for="emp3"><span class="icon">🏭</span>11–30 служители</label></div>
+										<div class="opt-card"><input type="radio" name="employees" id="emp4" value="4"><label for="emp4"><span class="icon">🏭</span>над 30 служители</label></div>
+									</div>
+								</div>
+								<div class="calc-nav">
+									<button class="btn-calc btn-back" onclick="prevStep(4)">← Назад</button>
+									<button class="btn-calc btn-next" onclick="nextStep(4)">Напред →</button>
+								</div>
+							</div>
+
+							<div class="calc-step" id="step-5">
+								<div class="calc-card">
+									<h3>Необходими ли са допълнителни услуги?</h3>
+									<div class="subtitle">Изберете всичко, което е приложимо — можете да ги добавите и по-късно</div>
+									<div class="option-grid">
+										<div class="opt-card"><input type="checkbox" name="extras" id="ex1" value="tax"><label for="ex1"><span class="icon">📋</span>Данъчни декларации</label></div>
+										<div class="opt-card"><input type="checkbox" name="extras" id="ex2" value="payroll"><label for="ex2"><span class="icon">💰</span>Обработка на заплати (ТРЗ)</label></div>
+										<div class="opt-card"><input type="checkbox" name="extras" id="ex3" value="annual"><label for="ex3"><span class="icon">📊</span>Годишен финансов отчет</label></div>
+										<div class="opt-card"><input type="checkbox" name="extras" id="ex4" value="consult"><label for="ex4"><span class="icon">🤝</span>Бизнес консултации</label></div>
+										<div class="opt-card"><input type="checkbox" name="extras" id="ex5" value="reg"><label for="ex5"><span class="icon">🏛️</span>Регистрация на фирма</label></div>
+										<div class="opt-card"><input type="checkbox" name="extras" id="ex6" value="audit"><label for="ex6"><span class="icon">🔍</span>Одиторска подкрепа</label></div>
+									</div>
+								</div>
+								<div class="calc-nav">
+									<button class="btn-calc btn-back" onclick="prevStep(5)">← Назад</button>
+									<button class="btn-calc btn-next" onclick="calcResult(); nextStep(5)">Изчисли →</button>
+								</div>
+							</div>
+
+							<div class="calc-step" id="step-6">
+								<div class="result-card">
+									<div class="result-label">Ориентировъчна месечна такса</div>
+									<div class="price-range" id="resultPrice">—</div>
+									<div class="price-note">BGN / месец · цените са ориентировъчни и без ДДС</div>
+
+									<div class="result-breakdown">
+										<h4>Резюме на вашия профил</h4>
+										<ul id="resultBreakdown"></ul>
+									</div>
+
+									<div class="cta-row">
+										<a href="index.html#contact" class="btn-cta-primary">Получете точна оферта</a>
+										<button class="btn-cta-secondary" onclick="resetCalc()">Започни отначало</button>
+									</div>
+								</div>
+								<p class="calc-disclaimer">
+									⚠️ Тази оценка е само за ориентация. Крайната цена се договаря индивидуално след безплатна консултация, въз основа на реалния обем работа.
+								</p>
+							</div>
+
+						</div>
+					</article>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.dropotron.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+	<script>
+		let currentStep = 1;
+		
+		function nextStep(from) {
+			if (!validateStep(from)) return;
+			goToStep(from + 1);
+		}
+		function prevStep(from) { goToStep(from - 1); }
+		function goToStep(n) {
+			document.querySelector('.calc-step.active').classList.remove('active');
+			document.getElementById('step-' + n).classList.add('active');
+			currentStep = n;
+			updateProgress(n);
+			window.scrollTo({ top: document.getElementById('main-wrapper').offsetTop - 20, behavior: 'smooth' });
+		}
+		function updateProgress(n) {
+			document.querySelectorAll('.calc-progress .step').forEach((el, i) => {
+				el.classList.remove('active','done');
+				if (i + 1 < n)  el.classList.add('done');
+				if (i + 1 === n) el.classList.add('active');
+			});
+		}
+
+		function validateStep(step) {
+			if (step === 1 && !document.querySelector('input[name="bizType"]:checked')) { alert('Моля, изберете тип на бизнеса.'); return false; }
+			if (step === 2 && !document.querySelector('input[name="vatReg"]:checked')) { alert('Моля, изберете дали имате регистрация по ДДС.'); return false; }
+			if (step === 4 && !document.querySelector('input[name="employees"]:checked')) { alert('Моля, изберете брой служители.'); return false; }
+			return true;
+		}
+
+		function updateSlider(el, labelId, labels) {
+			const pct = (el.value / el.max) * 100;
+			el.style.setProperty('--val', pct + '%');
+			document.getElementById(labelId).textContent = labels[el.value];
+		}
+
+		function calcResult() {
+			const bizType  = document.querySelector('input[name="bizType"]:checked')?.value || 'ood';
+			const vatReg   = document.querySelector('input[name="vatReg"]:checked')?.value || 'no';
+			const empLevel = parseInt(document.querySelector('input[name="employees"]:checked')?.value || '0');
+			const docLevel = parseInt(document.getElementById('docSlider').value);
+			const cashLevel= parseInt(document.getElementById('cashSlider').value);
+			const locLevel = parseInt(document.getElementById('locSlider').value);
+			const extras   = [...document.querySelectorAll('input[name="extras"]:checked')].map(e=>e.value);
+
+			const bases = { et: 80, freelance: 60, eood: 120, ood: 150, ad: 250, npo: 100 };
+			let base = bases[bizType] || 120;
+			if (vatReg === 'yes') base *= 1.5;
+
+			const docAdd = [0, 30, 70, 130, 220][docLevel];
+			const cashAdd = [0, 20, 40, 70][cashLevel];
+			const locAdd = [0, 30, 60, 100][locLevel];
+			const empAdd = [0, 40, 90, 160, 260][empLevel];
+			const extraCosts = { tax: 40, payroll: 30, annual: 80, consult: 50, reg: 150, audit: 120 };
+			const extrasTotal = extras.reduce((s, e) => s + (extraCosts[e] || 0), 0);
+
+			const total = Math.round(base + docAdd + cashAdd + locAdd + empAdd + extrasTotal);
+			const lo = Math.round(total * 0.87 / 5) * 5;
+			const hi = Math.round(total * 1.15 / 5) * 5;
+
+			document.getElementById('resultPrice').textContent = lo + ' – ' + hi + ' лв.';
+
+			const docLabels  = ['1–20','21–50','51–100','101–200','над 200'];
+			const cashLabels = ['Няма','1','2–3','над 4'];
+			const locLabels  = ['1','2–3','4–6','над 7'];
+			const empLabels  = ['Само собственик','1–3','4–10','11–30','над 30'];
+			const bizLabels  = { et:'Едноличен търговец (ЕТ)', eood:'ЕООД', ood:'ООД', ad:'АД', npo:'НПО', freelance:'Свободна професия' };
+			const extrasMap  = { tax:'Данъчни декларации', payroll:'ТРЗ', annual:'Годишен отчет', consult:'Консултация', reg:'Регистрация на фирма', audit:'Одиторска подкрепа' };
+			const extrasStr  = extras.length ? extras.map(e => extrasMap[e]).join(', ') : 'Няма';
+
+			document.getElementById('resultBreakdown').innerHTML = `
+				<li>Тип фирма <span>${bizLabels[bizType]}</span></li>
+				<li>Регистрация по ДДС <span>${vatReg === 'yes' ? 'Да' : 'Не'}</span></li>
+				<li>Месечни документи <span>${docLabels[docLevel]}</span></li>
+				<li>Служители <span>${empLabels[empLevel]}</span></li>
+				<li>Търговски обекти <span>${locLabels[locLevel]}</span></li>
+				<li>Допълнителни услуги <span style="font-size: .85em">${extrasStr}</span></li>
+			`;
+		}
+
+		function resetCalc() {
+			document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(i => i.checked = false);
+			['docSlider','cashSlider','locSlider'].forEach(id => {
+				const el = document.getElementById(id);
+				el.value = 0;
+				el.style.setProperty('--val','0%');
+			});
+			document.getElementById('docVal').textContent  = '1–20';
+			document.getElementById('cashVal').textContent = 'Няма';
+			document.getElementById('locVal').textContent  = '1';
+			goToStep(1);
+		}
+	</script>
+</body>
+</html>
